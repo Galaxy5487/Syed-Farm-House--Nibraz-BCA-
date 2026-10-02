@@ -1,7 +1,33 @@
 document.addEventListener('DOMContentLoaded', () => {
   const menu = document.querySelector('.menu-toggle');
   const links = document.querySelector('.nav-links');
-  if (menu && links) { menu.addEventListener('click', () => { const open = links.classList.toggle('open'); menu.setAttribute('aria-expanded', String(open)); }); links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { links.classList.remove('open'); menu.setAttribute('aria-expanded', 'false') })); }
+  if (menu && links) {
+    const toggleMenu = (show) => {
+      const isOpen = show !== undefined ? show : !links.classList.contains('open');
+      links.classList.toggle('open', isOpen);
+      menu.setAttribute('aria-expanded', String(isOpen));
+      menu.innerHTML = isOpen ? '✕' : '☰';
+    };
+
+    menu.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleMenu();
+    });
+
+    links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => toggleMenu(false)));
+
+    document.addEventListener('click', (e) => {
+      if (links.classList.contains('open') && !links.contains(e.target) && !menu.contains(e.target)) {
+        toggleMenu(false);
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && links.classList.contains('open')) {
+        toggleMenu(false);
+      }
+    });
+  }
   const current = location.pathname.split('/').pop() || 'index.html';
   document.querySelectorAll('.nav-links a[data-page]').forEach(a => a.classList.toggle('active', a.dataset.page === current));
   const observer = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target) } }), { threshold: .12 });
