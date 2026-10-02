@@ -1,0 +1,1 @@
+The gallery currently uses responsive agricultural photography URLs as fallbacks. For a fully local/offline deployment, replace each image URL in the HTML files with files stored in this folder. Keep the supplied Syed Farm House banner/logo as the primary local branding asset when available.
